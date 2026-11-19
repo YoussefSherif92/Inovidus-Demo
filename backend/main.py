@@ -1,8 +1,10 @@
 import logging
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
 from qdrant_client import QdrantClient
 
 from erp import match_contract
@@ -32,6 +34,13 @@ app = FastAPI(
     title="Inovidus Demo",
     lifespan=lifespan,
 )
+
+
+@app.get("/", response_class=FileResponse, include_in_schema=False)
+def homepage():
+    return FileResponse(
+        Path(__file__).resolve().parent / "frontend" / "index.html"
+    )
 
 
 @app.get("/health")
