@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "category": "water_damage",
+    "title": "Wasserschaden / Leckage",
+    "description": "Wasser tritt aus einer Leitung, einem Anschluss oder unter einer Spüle aus. Möbel oder Boden werden nass. Ein Unterschrank kann durch das Wasser aufquellen."
+  },
+  {
+    "id": 2,
+    "category": "blocked_drain",
+    "title": "Abflussverstopfung",
+    "description": "Wasser fließt aus einer Spüle, einem Waschbecken oder einer Dusche langsam oder gar nicht ab. Wasser staut sich im Becken. Der Abfluss kann gluckern."
+  },
+  {
+    "id": 3,
+    "category": "heating_failure",
+    "title": "Heizungsausfall",
+    "description": "Die Heizkörper bleiben kalt, obwohl die Heizung eingeschaltet ist. Die Wohnung wird nicht ausreichend warm. Eine Heizungsanlage kann eine Störung anzeigen."
+  },
+  {
+    "id": 4,
+    "category": "mould",
+    "title": "Feuchtigkeit / Schimmel",
+    "description": "An Wänden oder Decken entstehen feuchte Stellen, dunkle Flecken oder sichtbarer Schimmel. Im Raum kann ein muffiger Geruch auftreten."
+  }
+]
