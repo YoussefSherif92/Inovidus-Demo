@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inovidus · Schadenmanagement</title>
+
+  <style>
+    :root {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: #17233b;
+      background: #f3f6fb;
+      line-height: 1.6;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body { margin: 0; }
+
+    header {
+      background: #101d35;
+      color: white;
+      padding: 22px max(24px, calc((100vw - 1180px) / 2));
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 750;
+      letter-spacing: -0.7px;
+    }
+
+    .brand span { color: #6bdac7; }
+
+    header p {
+      margin: 3px 0 0;
+      color: #b9c7df;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 38px auto;
+      padding: 0 22px;
+    }
+
+    h1 {
+      font-size: clamp(27px, 4vw, 38px);
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    h2 { font-size: 19px; margin: 0 0 16px; }
+
+    .intro { color: #617087; max-width: 760px; }
+
+    .card {
+      background: white;
+      border: 1px solid #dfe6f0;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 5px 20px #17233b05;
+    }
+
+    form { margin-top: 27px; }
+
+    label {
+      display: block;
+      font-weight: 650;
+      margin: 16px 0 7px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #cbd5e3;
+      border-radius: 9px;
+      background: #fbfcfe;
+      color: inherit;
+      font: inherit;
+    }
+
+    input:focus, textarea:focus {
+      outline: 3px solid #2363eb20;
+      border-color: #2363eb;
+    }
+
+    textarea { min-height: 210px; resize: vertical; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 19px;
+      background: #245fe5;
+      color: white;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #edf2fb;
+      color: #24416d;
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
+
+    .status {
+      border-radius: 9px;
+      padding: 13px 16px;
+      margin-top: 18px;
+      background: #eaf0fb;
+    }
+
+    .status.error { background: #fff0ef; color: #a12f2f; }
+    .status.success { background: #e6f7f1; color: #17674b; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 22px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 11px;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 650;
+      background: #edf2fb;
+    }
+
+    .badge.high { color: #a13225; background: #fff0e9; }
+
+    dl { margin: 0; }
+
+    .field {
+      display: grid;
+      grid-template-columns: minmax(110px, 35%) 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #edf1f7;
+    }
+
+    dt { color: #617087; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: inherit;
+      margin: 12px 0;
+    }
+
+    .muted, small { color: #617087; }
+
+    ul { padding-left: 20px; }
+
+    details pre {
+      background: #111e34;
+      color: #dce8fa;
+      border-radius: 10px;
+      padding: 20px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      max-height: 600px;
+      overflow: auto;
+    }
+
+    summary { cursor: pointer; font-weight: 650; }
+
+    footer {
+      padding: 28px 0;
+      color: #617087;
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .card { padding: 20px; }
+      .field { grid-template-columns: 1fr; gap: 2px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">inovidus<span>.</span></div>
+    <p>KI-gestützte Vorprüfung von Schadenmeldungen</p>
+  </header>
+
+  <main>
+    <h1>Von der E-Mail zum strukturierten Vorgang.</h1>
+
+    <p class="intro">
+      Schaden erkennen, Mietvertrag zuordnen und nächste Schritte
+      vorbereiten. Antwort und interne Aufgabe werden zur Prüfung
+      vorgeschlagen.
+    </p>
+
+    <form id="email-form" class="card">
+      <h2>Schadenmeldung eingeben</h2>
+
+      <label for="subject">Betreff</label>
+      <input
+        id="subject"
+        name="subject"
+        maxlength="200"
+        placeholder="Betreff der eingegangenen E-Mail"
+        required
+      >
+
+      <label for="body">E-Mail-Text</label>
+      <textarea
+        id="body"
+        name="body"
+        maxlength="6000"
+        placeholder="Fügen Sie hier die Schadenmeldung ein."
+        required
+      ></textarea>
+
+      <div class="actions">
+        <button id="analyze-button" type="submit">
+          Schadenmeldung analysieren
+        </button>
+
+        <button id="example-button" class="secondary" type="button">
+          Beispiel laden
+        </button>
+      </div>
+
+      <p id="status" class="status" role="status" hidden></p>
+    </form>
+
+    <section id="results" class="grid" hidden>
+      <article class="card">
+        <h2>Erkannter Schaden</h2>
+        <p id="damage-summary"></p>
+        <dl id="damage-fields"></dl>
+      </article>
+
+      <article class="card">
+        <h2>ERP-Zuordnung</h2>
+        <p id="assignment-status" class="badge"></p>
+        <dl id="assignment-fields"></dl>
+
+        <h3>Bisherige Vorgänge</h3>
+        <ul id="previous-cases"></ul>
+      </article>
+
+      <article class="card">
+        <h2>Dringlichkeit</h2>
+        <p id="urgency-level" class="badge"></p>
+        <p id="urgency-reason"></p>
+      </article>
+
+      <article class="card">
+        <h2>Vorgeschlagene interne Aufgabe</h2>
+        <dl id="task-fields"></dl>
+        <p class="muted">
+          Vorschlag zur menschlichen Prüfung und Freigabe.
+        </p>
+      </article>
+
+      <article class="card full">
+        <h2>Antwortentwurf an den Mieter</h2>
+        <strong id="reply-subject"></strong>
+        <pre id="reply-body"></pre>
+        <small>Entwurf · Vor dem Versand prüfen und freigeben.</small>
+      </article>
+
+      <article class="card">
+        <h2>Belegstellen aus der E-Mail</h2>
+        <dl id="evidence-fields"></dl>
+      </article>
+
+      <article class="card">
+        <h2>Ähnliche Referenzen</h2>
+        <ul id="references"></ul>
+        <small>
+          Die Ähnlichkeitswerte beschreiben die Nähe zur Referenz.
+          Die hinterlegten Referenzen sind Demodaten.
+        </small>
+      </article>
+
+      <article class="card full">
+        <details>
+          <summary>Vollständiges strukturiertes JSON</summary>
+          <pre id="raw-json"></pre>
+        </details>
+
+        <div class="actions">
+          <button id="download-button" class="secondary" type="button">
+            JSON herunterladen
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      Inovidus Demo · KI-Ergebnisse fachlich prüfen.
+    </footer>
+  </main>
+
+  <script>
+    const API_URL = "https://inovidus-demo.onrender.com";
+
+    const form = document.getElementById("email-form");
+    const subjectInput = document.getElementById("subject");
+    const bodyInput = document.getElementById("body");
+    const analyzeButton = document.getElementById("analyze-button");
+    const exampleButton = document.getElementById("example-button");
+    const statusBox = document.getElementById("status");
+    const results = document.getElementById("results");
+
+    let lastResult = null;
+    let busy = false;
+
+    const damageLabels = {
+      water_damage: "Wasserschaden / Leckage",
+      blocked_drain: "Abflussverstopfung",
+      heating_failure: "Heizungsausfall",
+      mould: "Feuchtigkeit / Schimmel",
+      other: "Sonstiger Schaden",
+      unknown: "Unklar"
+    };
+
+    function showValue(value) {
+      if (value === null || value === undefined || value === "") {
+        return "Nicht angegeben";
+      }
+
+      if (value === true) return "Ja";
+      if (value === false) return "Nein";
+
+      return String(value);
+    }
+
+    function writeText(id, value) {
+      document.getElementById(id).textContent = showValue(value);
+    }
+
+    function renderFields(id, fields) {
+      const container = document.getElementById(id);
+      container.replaceChildren();
+
+      for (const [label, value] of fields) {
+        const row = document.createElement("div");
+        row.className = "field";
+
+        const term = document.createElement("dt");
+        term.textContent = label;
+
+        const description = document.createElement("dd");
+        description.textContent = showValue(value);
+
+        row.append(term, description);
+        container.append(row);
+      }
+    }
+
+    function renderList(id, entries, emptyMessage) {
+      const container = document.getElementById(id);
+      container.replaceChildren();
+
+      const items = entries.length ? entries : [emptyMessage];
+
+      for (const text of items) {
+        const item = document.createElement("li");
+        item.textContent = text;
+        container.append(item);
+      }
+    }
+
+    function setStatus(message, state = "") {
+      statusBox.hidden = false;
+      statusBox.className = "status" + (state ? " " + state : "");
+      statusBox.textContent = message;
+    }
+
+    function renderResult(data) {
+      const report = data.report || {};
+      const erp = data.erp_match || {};
+      const contract = erp.contract || {};
+      const workflow = data.workflow || {};
+      const urgency = workflow.urgency || {};
+      const reply = workflow.tenant_reply || {};
+      const task = workflow.internal_task || {};
+      const evidence = report.evidence || {};
+
+      writeText("damage-summary", report.damage_summary);
+
+      renderFields("damage-fields", [
+        ["Schadenart", damageLabels[report.damage_type] || report.damage_type],
+        ["Mieter", report.tenant_name],
+        ["Adresse", report.address],
+        ["Wohnung", report.unit_description],
+        ["Laufender Wasseraustritt", report.ongoing_leak],
+        ["Sachschaden gemeldet", report.property_damage_reported],
+        ["Fotos erwähnt", report.photos_mentioned]
+      ]);
+
+      writeText(
+        "assignment-status",
+        erp.status === "matched"
+          ? "Vertrag eindeutig zugeordnet"
+          : "Manuelle Zuordnung erforderlich"
+      );
+
+      renderFields("assignment-fields", [
+        ["Vertrag", contract.contract_id],
+        ["Objekt", contract.property_id],
+        ["Wohneinheit", contract.unit_id],
+        ["Aktiver Vertrag", contract.is_active],
+        ["Prüfergebnis", erp.reason]
+      ]);
+
+      const caseLabels = {
+        open: "Offen",
+        in_progress: "In Bearbeitung",
+        closed: "Abgeschlossen"
+      };
+
+      renderList(
+        "previous-cases",
+        (erp.previous_cases || []).map(item =>
+          `${item.title} · ${caseLabels[item.status] || item.status}`
+        ),
+        "Keine bisherigen Vorgänge für eine bestätigte Zuordnung."
+      );
+
+      const urgencyLabel = document.getElementById("urgency-level");
+
+      urgencyLabel.textContent = urgency.level === "high"
+        ? "Hohe Dringlichkeit"
+        : "Fachliche Bewertung erforderlich";
+
+      urgencyLabel.className = urgency.level === "high"
+        ? "badge high"
+        : "badge";
+
+      writeText("urgency-reason", urgency.reason);
+
+      renderFields("task-fields", [
+        ["Titel", task.title],
+        ["Beschreibung", task.description],
+        ["Priorität", task.priority],
+        ["Vertrag", task.contract_id],
+        ["Status", task.status === "proposed" ? "Vorgeschlagen" : task.status]
+      ]);
+
+      writeText("reply-subject", reply.subject);
+      writeText("reply-body", reply.body);
+
+      renderFields("evidence-fields", [
+        ["Wasseraustritt", evidence.ongoing_leak],
+        ["Sachschaden", evidence.property_damage],
+        ["Fotos", evidence.photos]
+      ]);
+
+      renderList(
+        "references",
+        (data.references || []).map(item => {
+          const similarity = typeof item.similarity === "number"
+            ? item.similarity.toFixed(3)
+            : "Nicht angegeben";
+
+          return `${item.title} · Ähnlichkeit: ${similarity}`;
+        }),
+        "Keine Referenzen vorhanden."
+      );
+
+      writeText("raw-json", JSON.stringify(data, null, 2));
+
+      lastResult = data;
+      results.hidden = false;
+    }
+
+    exampleButton.addEventListener("click", () => {
+      subjectInput.value = "Wasserschaden Küche, Musterstraße 12";
+
+      bodyInput.value =
+        "Hallo, seit gestern läuft Wasser unter unserer Spüle aus. " +
+        "Der Küchenunterschrank ist bereits aufgequollen. " +
+        "Wir wohnen in der Musterstr. 12, zweite Etage links. " +
+        "Bitte dringend jemanden schicken. Fotos sind vorhanden. " +
+        "Viele Grüße, Max Mustermann";
+    });
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (busy) return;
+
+      const subject = subjectInput.value.trim();
+      const body = bodyInput.value.trim();
+
+      if (!subject || !body) {
+        setStatus("Bitte Betreff und E-Mail-Text eingeben.", "error");
+        return;
+      }
+
+      busy = true;
+      analyzeButton.disabled = true;
+      exampleButton.disabled = true;
+      results.hidden = true;
+      lastResult = null;
+
+      setStatus("Verbindung wird aufgebaut. Die erste Anfrage kann länger dauern.");
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 120000);
+      const started = performance.now();
+
+      try {
+        const health = await fetch(API_URL + "/health", {
+          signal: controller.signal
+        });
+
+        if (!health.ok) {
+          throw new Error("Der Server ist momentan nicht bereit.");
+        }
+
+        setStatus("Schadenmeldung wird analysiert und zugeordnet.");
+
+        const response = await fetch(API_URL + "/reports/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ subject, body }),
+          signal: controller.signal
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          const detail = typeof data.detail === "string"
+            ? data.detail
+            : `Anfrage fehlgeschlagen: HTTP ${response.status}`;
+
+          throw new Error(detail);
+        }
+
+        renderResult(data);
+
+        const seconds = ((performance.now() - started) / 1000).toFixed(1);
+
+        setStatus(
+          `Analyse abgeschlossen (${seconds} Sekunden). Ergebnisse bitte prüfen.`,
+          "success"
+        );
+
+        results.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      } catch (error) {
+        let message = error.message;
+
+        if (error.name === "AbortError") {
+          message = "Zeitüberschreitung. Bitte versuchen Sie es erneut.";
+        } else if (error instanceof TypeError) {
+          message =
+            "Verbindung zum Backend fehlgeschlagen. " +
+            "Bitte Netzwerk und Browserfreigabe des Servers prüfen.";
+        }
+
+        setStatus(message, "error");
+
+      } finally {
+        clearTimeout(timeout);
+        busy = false;
+        analyzeButton.disabled = false;
+        exampleButton.disabled = false;
+      }
+    });
+
+    document.getElementById("download-button").addEventListener("click", () => {
+      if (!lastResult) return;
+
+      const file = new Blob(
+        [JSON.stringify(lastResult, null, 2)],
+        { type: "application/json" }
+      );
+
+      const url = URL.createObjectURL(file);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "inovidus-report.json";
+
+      document.body.append(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+  </script>
+</body>
+</html>
